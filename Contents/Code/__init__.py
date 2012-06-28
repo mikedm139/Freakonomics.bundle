@@ -25,7 +25,8 @@ def Main():
         if not url.startswith('http://'):
             url = BASE_URL + url
         ep_num = podcast.xpath('./td')[0].text
-        ep_title = podcast.xpath('.//span[contains(@class, "title")]')[0].text
+        try: ep_title = podcast.xpath('.//span[contains(@class, "title")]/a')[0].text
+        except: ep_title = podcast.xpath('.//a/span[contains(@class, "title")]')[0].text
         title = "%s - %s" % (ep_num, ep_title)
         summary = podcast.xpath('.//p')[0].text
         date = podcast.xpath('.//td')[-2].text
