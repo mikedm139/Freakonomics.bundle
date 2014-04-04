@@ -1,4 +1,4 @@
-AUDIO_PREFIX = '/music/freakonomics'
+PREFIX = '/music/freakonomics'
 
 NAME = 'Freakonomics Radio'
 ICON = 'icon-default.png'
@@ -9,13 +9,12 @@ PODCASTS_URL = BASE_URL + '/radio/freakonomics-radio-podcast-archive/'
 
 ####################################################################################################
 def Start():
-    Plugin.AddPrefixHandler(AUDIO_PREFIX, Main, NAME, ICON, ART)
   
-    ObjectContainer.art = R(ART)
     ObjectContainer.title1 = NAME
     TrackObject.thumb = R(ICON)
     
 ####################################################################################################
+@handler(PREFIX, NAME, ICON, ART)
 def Main():
     oc = ObjectContainer()
     data = HTML.ElementFromURL(PODCASTS_URL)
@@ -28,7 +27,8 @@ def Main():
         try: ep_title = podcast.xpath('.//span[contains(@class, "title")]/a')[0].text
         except: ep_title = podcast.xpath('.//a/span[contains(@class, "title")]')[0].text
         title = "%s - %s" % (ep_num, ep_title)
-        summary = podcast.xpath('.//p')[0].text
+        try: summary = podcast.xpath('./td/text()')[1]
+        except: summary = ""
         date = podcast.xpath('.//td')[-2].text
         try: date = Datetime.ParseDate(date).date()
         except: date = None
